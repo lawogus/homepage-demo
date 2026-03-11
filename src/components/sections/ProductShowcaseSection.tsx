@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { useRef, useState } from "react";
+import { motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { ArrowUpRight, CheckCircle2 } from "lucide-react";
 import { showcaseViews } from "../../data/content";
 import { Button } from "../ui/Button";
@@ -15,35 +15,21 @@ const visualThemes = [
 ];
 
 export function ProductShowcaseSection() {
-  const [activeId, setActiveId] = useState(showcaseViews[0].id);
-  const blockRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const sectionRef = useRef<HTMLDivElement | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end end"],
+  });
 
-  useEffect(() => {
-    const observers: IntersectionObserver[] = [];
+  useMotionValueEvent(scrollYProgress, "change", (value) => {
+    const nextIndex = Math.min(
+      showcaseViews.length - 1,
+      Math.floor(value * showcaseViews.length)
+    );
+    setActiveIndex(nextIndex);
+  });
 
-    blockRefs.current.forEach((element, idx) => {
-      if (!element) return;
-
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            setActiveId(showcaseViews[idx].id);
-          }
-        },
-        {
-          rootMargin: "-28% 0px -42% 0px",
-          threshold: [0.2, 0.4, 0.65],
-        }
-      );
-
-      observer.observe(element);
-      observers.push(observer);
-    });
-
-    return () => observers.forEach((observer) => observer.disconnect());
-  }, []);
-
-  const activeIndex = showcaseViews.findIndex((view) => view.id === activeId);
   const activeView = showcaseViews[activeIndex] ?? showcaseViews[0];
 
   return (
@@ -96,86 +82,106 @@ export function ProductShowcaseSection() {
           ))}
         </div>
 
-        <div className="mt-16 hidden gap-12 lg:grid lg:grid-cols-[0.78fr_1.22fr]">
-          <div className="space-y-12">
-            {showcaseViews.map((view, idx) => {
-              const isActive = activeId === view.id;
+        <div ref={sectionRef} className="relative mt-16 hidden lg:block lg:h-[360vh]">
+          <div className="sticky top-24 grid h-[calc(100vh-6rem)] gap-12 lg:grid-cols-[0.78fr_1.22fr]">
+            <div className="relative overflow-hidden">
+              {showcaseViews.map((view, idx) => {
+                const isActive = activeIndex === idx;
 
-              return (
-                <motion.div
-                  key={view.id}
-                  ref={(element) => {
-                    blockRefs.current[idx] = element;
-                  }}
-                  animate={{
-                    opacity: isActive ? 1 : 0.3,
-                    y: isActive ? 0 : 22,
-                  }}
-                  transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                  className="flex min-h-[72vh] items-center"
-                >
-                  <div className="max-w-xl">
-                    <div className="inline-flex items-center gap-3 rounded-full border border-slate-200 bg-white/88 px-4 py-2 text-sm font-medium text-slate-700 shadow-sm shadow-slate-200/50">
-                      <span className="inline-flex h-2.5 w-2.5 rounded-full bg-cyan-500" />
-                      {view.label}
+                return (
+                  <motion.div
+                    key={view.id}
+                    initial={false}
+                    animate={{
+                      opacity: isActive ? 1 : 0,
+                      y: isActive ? 0 : 56,
+                      scale: isActive ? 1 : 0.98,
+                      filter: isActive ? "blur(0px)" : "blur(10px)",
+                      pointerEvents: isActive ? "auto" : "none",
+                    }}
+                    transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                    className="absolute inset-0 flex items-center"
+                  >
+                    <div className="max-w-xl">
+                      <div className="inline-flex items-center gap-3 rounded-full border border-slate-200 bg-white/88 px-4 py-2 text-sm font-medium text-slate-700 shadow-sm shadow-slate-200/50">
+                        <span className="inline-flex h-2.5 w-2.5 rounded-full bg-cyan-500" />
+                        {view.label}
+                      </div>
+
+                      <h3 className="mt-7 text-4xl font-semibold leading-[1.15] tracking-tight text-slate-950 xl:text-[3.35rem]">
+                        {view.title}
+                      </h3>
+
+                      <p className="mt-6 max-w-lg text-lg leading-8 text-slate-600">
+                        {view.description}
+                      </p>
+
+                      <div className="mt-8 space-y-4">
+                        {view.highlights.map((item, itemIdx) => (
+                          <motion.div
+                            key={item}
+                            initial={false}
+                            animate={{
+                              opacity: isActive ? 1 : 0,
+                              y: isActive ? 0 : 24,
+                            }}
+                            transition={{
+                              duration: 0.45,
+                              delay: isActive ? 0.1 + itemIdx * 0.06 : 0,
+                            }}
+                            className="flex items-start gap-3 text-base leading-7 text-slate-700"
+                          >
+                            <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-emerald-600" />
+                            <span>{item}</span>
+                          </motion.div>
+                        ))}
+                      </div>
+
+                      <div className="mt-10 flex flex-wrap gap-3">
+                        {view.metrics.map((metric, metricIdx) => (
+                          <motion.div
+                            key={metric.label}
+                            initial={false}
+                            animate={{
+                              opacity: isActive ? 1 : 0,
+                              y: isActive ? 0 : 18,
+                            }}
+                            transition={{
+                              duration: 0.4,
+                              delay: isActive ? 0.18 + metricIdx * 0.05 : 0,
+                            }}
+                            className="rounded-2xl border border-white/80 bg-white/82 px-4 py-3 shadow-sm shadow-slate-200/50"
+                          >
+                            <div className="text-[11px] uppercase tracking-[0.18em] text-slate-400">
+                              {metric.label}
+                            </div>
+                            <div className="mt-2 text-xl font-semibold text-slate-950">
+                              {metric.value}
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
                     </div>
+                  </motion.div>
+                );
+              })}
+            </div>
 
-                    <h3 className="mt-7 text-4xl font-semibold leading-[1.15] tracking-tight text-slate-950 xl:text-[3.35rem]">
-                      {view.title}
-                    </h3>
-
-                    <p className="mt-6 max-w-lg text-lg leading-8 text-slate-600">
-                      {view.description}
-                    </p>
-
-                    <div className="mt-8 space-y-4">
-                      {view.highlights.map((item) => (
-                        <div
-                          key={item}
-                          className="flex items-start gap-3 text-base leading-7 text-slate-700"
-                        >
-                          <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-emerald-600" />
-                          <span>{item}</span>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="mt-10 flex flex-wrap gap-3">
-                      {view.metrics.map((metric) => (
-                        <div
-                          key={metric.label}
-                          className="rounded-2xl border border-white/80 bg-white/82 px-4 py-3 shadow-sm shadow-slate-200/50"
-                        >
-                          <div className="text-[11px] uppercase tracking-[0.18em] text-slate-400">
-                            {metric.label}
-                          </div>
-                          <div className="mt-2 text-xl font-semibold text-slate-950">
-                            {metric.value}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-
-          <div className="sticky top-28 h-[calc(100vh-7rem)]">
             <div className="relative h-full overflow-hidden rounded-[40px] border border-white/60 bg-slate-950 shadow-[0_30px_90px_rgba(15,23,42,0.16)]">
               {showcaseViews.map((view, idx) => {
-                const isActive = activeId === view.id;
+                const isActive = activeIndex === idx;
 
                 return (
                   <motion.div
                     key={view.id}
                     animate={{
                       opacity: isActive ? 1 : 0,
-                      y: isActive ? 0 : 26,
+                      y: isActive ? 0 : 32,
                       scale: isActive ? 1 : 0.985,
+                      filter: isActive ? "blur(0px)" : "blur(16px)",
                       pointerEvents: isActive ? "auto" : "none",
                     }}
-                    transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                    transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                     className="absolute inset-0"
                   >
                     <div
@@ -303,7 +309,7 @@ export function ProductShowcaseSection() {
                             <div
                               key={item.id}
                               className={`rounded-full px-3 py-1.5 text-xs transition ${
-                                item.id === activeId
+                                item.id === activeView.id
                                   ? "bg-white text-slate-950"
                                   : "bg-white/10 text-white/58"
                               }`}
