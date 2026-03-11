@@ -14,6 +14,7 @@ import { SectionBadge } from "./components/ui/SectionBadge";
 import { Button } from "./components/ui/Button";
 import { Card } from "./components/ui/Card";
 import { GradientOrb } from "./components/ui/GradientOrb";
+import { Reveal } from "./components/ui/Reveal";
 import { features, stats, useCases, valuePills } from "./data/content";
 
 export default function App() {
@@ -131,7 +132,8 @@ export default function App() {
 
         <section id="about" className="px-6 py-24 lg:px-10 lg:py-32">
           <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.92fr_1.08fr]">
-            <div>
+            <Reveal>
+              <div>
               <SectionBadge>ABOUT</SectionBadge>
               <h2 className="mt-5 text-3xl font-semibold leading-tight sm:text-4xl">
                 브랜드의 방향을 정하고
@@ -143,7 +145,8 @@ export default function App() {
                 함께 다룹니다. 각 서비스는 브랜드의 현재 단계와 목표에 맞춰 유연하게
                 조합됩니다.
               </p>
-            </div>
+              </div>
+            </Reveal>
 
             <div className="grid gap-5 sm:grid-cols-2">
               {features.map((feature, idx) => {
@@ -183,14 +186,16 @@ export default function App() {
 
         <section className="px-6 py-24 lg:px-10 lg:py-32">
           <div className="mx-auto max-w-7xl">
-            <div>
+            <Reveal>
+              <div>
               <SectionBadge>USE CASE</SectionBadge>
               <h2 className="mt-5 text-3xl font-semibold leading-tight sm:text-4xl">
                 이런 브랜드와
                 <br />
                 함께해 왔습니다.
               </h2>
-            </div>
+              </div>
+            </Reveal>
 
             <div className="mt-10 grid gap-5 lg:grid-cols-3">
               {useCases.map((item, idx) => {
@@ -232,26 +237,28 @@ export default function App() {
         <ContactSection />
 
         <footer className="px-6 pb-10 lg:px-10">
-          <div className="mx-auto flex max-w-7xl flex-col gap-4 rounded-[32px] border border-white/60 bg-white/72 px-6 py-6 text-sm text-slate-500 backdrop-blur sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <div className="font-semibold text-slate-900">Northbound Creative</div>
-              <div className="mt-1">Advertising & Brand Campaign Studio</div>
+          <Reveal>
+            <div className="mx-auto flex max-w-7xl flex-col gap-4 rounded-[32px] border border-white/60 bg-white/72 px-6 py-6 text-sm text-slate-500 backdrop-blur sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <div className="font-semibold text-slate-900">Northbound Creative</div>
+                <div className="mt-1">Advertising & Brand Campaign Studio</div>
+              </div>
+              <div className="flex flex-wrap gap-4">
+                <a href="#about" className="transition hover:text-slate-900">
+                  회사 소개
+                </a>
+                <a href="#features" className="transition hover:text-slate-900">
+                  서비스
+                </a>
+                <a href="#board" className="transition hover:text-slate-900">
+                  뉴스룸
+                </a>
+                <a href="#contact" className="transition hover:text-slate-900">
+                  문의
+                </a>
+              </div>
             </div>
-            <div className="flex flex-wrap gap-4">
-              <a href="#about" className="transition hover:text-slate-900">
-                회사 소개
-              </a>
-              <a href="#features" className="transition hover:text-slate-900">
-                서비스
-              </a>
-              <a href="#board" className="transition hover:text-slate-900">
-                뉴스룸
-              </a>
-              <a href="#contact" className="transition hover:text-slate-900">
-                문의
-              </a>
-            </div>
-          </div>
+          </Reveal>
         </footer>
       </main>
     </div>

@@ -1,24 +1,27 @@
 import { motion } from "framer-motion";
 import { caseStudies } from "../../data/content";
 import { Card } from "../ui/Card";
+import { Reveal } from "../ui/Reveal";
 import { SectionBadge } from "../ui/SectionBadge";
 
 export function CaseStudiesSection() {
   return (
     <section className="px-6 py-24 lg:px-10 lg:py-32">
       <div className="mx-auto max-w-7xl">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <SectionBadge>SELECTED WORK</SectionBadge>
-            <h2 className="mt-5 text-3xl font-semibold leading-tight sm:text-4xl">
-              최근 작업 중 일부를 소개합니다.
-            </h2>
+        <Reveal>
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <SectionBadge>SELECTED WORK</SectionBadge>
+              <h2 className="mt-5 text-3xl font-semibold leading-tight sm:text-4xl">
+                최근 작업 중 일부를 소개합니다.
+              </h2>
+            </div>
+            <p className="max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
+              브랜드의 단계와 목표에 따라 전략, 매체 운영, 콘텐츠 제작의 비중은
+              달라집니다. 각 프로젝트는 필요한 방식으로 유연하게 설계됩니다.
+            </p>
           </div>
-          <p className="max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
-            브랜드의 단계와 목표에 따라 전략, 매체 운영, 콘텐츠 제작의 비중은
-            달라집니다. 각 프로젝트는 필요한 방식으로 유연하게 설계됩니다.
-          </p>
-        </div>
+        </Reveal>
 
         <div className="mt-10 grid gap-5 xl:grid-cols-3">
           {caseStudies.map((item, idx) => (

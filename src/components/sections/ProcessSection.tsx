@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import { SectionBadge } from "../ui/SectionBadge";
+import { Reveal } from "../ui/Reveal";
 import { cn } from "../../utils/cn";
 import { steps } from "../../data/content";
 
@@ -37,20 +38,22 @@ export function ProcessSection() {
   return (
     <section id="process" className="px-6 py-24 lg:px-10 lg:py-32">
       <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.8fr_1.2fr]">
-        <div className="lg:sticky lg:top-28 lg:self-start">
-          <SectionBadge>PROCESS</SectionBadge>
-          <h2 className="mt-5 text-3xl font-semibold leading-tight sm:text-4xl">
-            좋은 캠페인은
-            <br />
-            분명한 흐름에서 시작됩니다.
-          </h2>
-          <p className="mt-5 text-sm leading-7 text-slate-600 sm:text-base">
-            현재 활성 단계는{" "}
-            <span className="font-semibold text-slate-950">{activeTitle}</span>
-            입니다. 브랜드를 이해하는 단계부터 실행과 리포트까지의 흐름을
-            자연스럽게 확인할 수 있습니다.
-          </p>
-        </div>
+        <Reveal className="lg:sticky lg:top-28 lg:self-start">
+          <div>
+            <SectionBadge>PROCESS</SectionBadge>
+            <h2 className="mt-5 text-3xl font-semibold leading-tight sm:text-4xl">
+              좋은 캠페인은
+              <br />
+              분명한 흐름에서 시작됩니다.
+            </h2>
+            <p className="mt-5 text-sm leading-7 text-slate-600 sm:text-base">
+              현재 활성 단계는{" "}
+              <span className="font-semibold text-slate-950">{activeTitle}</span>
+              입니다. 브랜드를 이해하는 단계부터 실행과 리포트까지의 흐름을
+              자연스럽게 확인할 수 있습니다.
+            </p>
+          </div>
+        </Reveal>
 
         <div className="space-y-5">
           {steps.map((step, idx) => (
